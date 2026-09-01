@@ -1,0 +1,13 @@
+---
+import { getPosts } from '../lib/blog';
+import PostCard from './PostCard.astro';
+
+const posts = (await getPosts()).slice(0, 5);
+---
+
+<aside class="widget widget_media">
+  <h4 class="sub-section-title">Recent posts</h4>
+  <div class="vk_posts">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
+</aside>

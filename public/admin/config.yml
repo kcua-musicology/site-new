@@ -1,0 +1,146 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
+  name: github
+  # 本番リポジトリに切り替えるときは kcua-musicology/kcua-musicology.github.io に変更する
+  repo: kcua-musicology/site-new
+  branch: main
+
+media_folder: /public/uploads
+public_folder: /uploads
+
+collections:
+  # ------------------------------------------------------------------
+  # ブログ記事（記事を追加・削除できる）
+  # ------------------------------------------------------------------
+  - name: blog
+    label: 音楽学専攻ブログ
+    label_singular: 記事
+    folder: /src/content/blog
+    create: true
+    slug: '{{slug}}'
+    preview_path: '{{slug}}'
+    sortable_fields: [date, title]
+    fields:
+      - { label: タイトル, name: title, widget: string }
+      - { label: 日付, name: date, widget: datetime, type: date }
+      - label: カテゴリ
+        name: categories
+        widget: select
+        multiple: true
+        min: 1
+        hint: 複数選べます。最初に選んだものが記事見出しと一覧のラベルになります
+        options:
+          - お知らせ
+          - 音楽学専攻の活動
+          - 教員の活動
+          - 学生の活躍
+          - 卒業生の活動
+      - { label: サムネイル画像, name: thumbnail, widget: image, required: false }
+      - { label: 抜粋, name: description, widget: string, required: false }
+      - { label: 本文, name: body, widget: richtext }
+
+  # ------------------------------------------------------------------
+  # 教員紹介（教員を追加・削除できる。並び順・サイドバーも自動で追従する）
+  # ------------------------------------------------------------------
+  - name: labs
+    label: 教員紹介
+    label_singular: 教員
+    folder: /src/content/labs
+    create: true
+    slug: '{{slug}}'
+    preview_path: 'labs/{{slug}}'
+    sortable_fields: [order, name]
+    fields:
+      - { label: 氏名, name: name, widget: string, hint: 例）太田 峰夫 }
+      - { label: 専門分野, name: field, widget: string, hint: 見出しの丸括弧内に表示されます }
+      - { label: 顔写真, name: photo, widget: image, required: false }
+      - { label: 表示順, name: order, widget: number, default: 0, value_type: int }
+      - label: リンク
+        name: links
+        widget: list
+        required: false
+        label_singular: リンク
+        summary: '{{fields.label}}'
+        fields:
+          - { label: 表示名, name: label, widget: string }
+          - { label: URL, name: url, widget: string }
+      - { label: 本文, name: body, widget: richtext }
+
+  # ------------------------------------------------------------------
+  # 固定ページ（ページ自体は増えない。中身だけ編集する）
+  # ------------------------------------------------------------------
+  - name: pages
+    label: 固定ページ
+    files:
+      - name: home
+        label: トップページ
+        file: /src/content/pages/home.md
+        preview_path: ''
+        fields:
+          - { label: ページ名（ブラウザのタブに出る）, name: title, widget: string }
+          - { label: メイン画像, name: hero, widget: image }
+          - { label: メイン画像（スマートフォン用）, name: hero_mobile, widget: image, required: false }
+          - label: 本文
+            name: body
+            widget: richtext
+            hint: この下に表示される最新記事3件は、ブログから自動生成されます
+
+      - name: musicology
+        label: 京芸の音楽学
+        file: /src/content/pages/musicology.md
+        preview_path: 'musicology'
+        fields:
+          - { label: ページ見出し, name: title, widget: string }
+          - { label: 本文, name: body, widget: richtext }
+
+      - name: musicology-lecture
+        label: 音楽学専攻の授業
+        file: /src/content/pages/musicology-lecture.md
+        preview_path: 'musicology/lecture'
+        fields:
+          - { label: ページ見出し, name: title, widget: string }
+          - { label: 本文, name: body, widget: richtext }
+
+      - name: musicology-dissertation
+        label: 過去の学位論文
+        file: /src/content/pages/musicology-dissertation.md
+        preview_path: 'musicology/dissertation'
+        fields:
+          - { label: ページ見出し, name: title, widget: string }
+          - { label: 本文, name: body, widget: richtext }
+
+      - name: musicology-facilities
+        label: 施設紹介
+        file: /src/content/pages/musicology-facilities.md
+        preview_path: 'musicology/facilities'
+        fields:
+          - { label: ページ見出し, name: title, widget: string }
+          - { label: 本文, name: body, widget: richtext }
+
+      - name: labs-index
+        label: 教員紹介（トップの説明文）
+        file: /src/content/pages/labs.md
+        preview_path: 'labs'
+        fields:
+          - { label: ページ見出し, name: title, widget: string }
+          - label: 説明文
+            name: body
+            widget: richtext
+            hint: この下に表示される教員の一覧は「教員紹介」から自動生成されます
+
+      - name: campuslife
+        label: キャンパスライフ
+        file: /src/content/pages/campuslife.md
+        preview_path: 'campuslife'
+        fields:
+          - { label: ページ見出し, name: title, widget: string }
+          - { label: 本文, name: body, widget: richtext }
+
+      - name: admission
+        label: 受験生の皆さんへ
+        file: /src/content/pages/admission.md
+        preview_path: 'admission'
+        fields:
+          - { label: ページ見出し, name: title, widget: string }
+          - { label: 本文, name: body, widget: richtext }

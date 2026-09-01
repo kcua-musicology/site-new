@@ -1,0 +1,11 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const page = await getEntry('pages', 'campuslife');
+const { Content } = await render(page);
+---
+
+<Base title={page.data.title} heading={page.data.title} breadcrumb={[{ label: page.data.title }]}>
+  <Content />
+</Base>

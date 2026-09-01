@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+
+// 教員はCMSで追加・並べ替えできるので、サイドバーもコレクションから生成する
+const teachers = (await getCollection('labs')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<aside class="widget widget_link_list">
+  <h4 class="sub-section-title"><a href="/labs/">教員紹介</a></h4>
+  <ul>
+    {teachers.map((t) => (
+      <li class="page_item"><a href={`/labs/${t.id}/`}>{t.data.name}</a></li>
+    ))}
+  </ul>
+</aside>

@@ -1,0 +1,53 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import RecentPosts from '../components/RecentPosts.astro';
+import { getPosts, primaryCategory, categoryPath, formatDate } from '../lib/blog';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const category = primaryCategory(post);
+
+// 現行サイトの記事ページは、ページ見出しに主カテゴリを出す
+const breadcrumb = [
+  { label: '音楽学専攻ブログ', href: '/category/blog/' },
+  ...(category ? [{ label: category, href: categoryPath(category) }] : []),
+  { label: post.data.title },
+];
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  heading={category}
+  breadcrumb={breadcrumb}
+>
+  <header class="entry-header">
+    <h1 class="entry-title">{post.data.title}</h1>
+    <div class="entry-meta">
+      <span class="entry-meta-item entry-meta-item-date">
+        <i class="far fa-calendar-alt"></i>
+        <span class="published">{formatDate(post.data.date)}</span>
+      </span>
+      {post.data.categories.map((name) => (
+        <span class="entry-meta-item entry-meta-item-category">
+          <a href={categoryPath(name)}>{name}</a>
+        </span>
+      ))}
+    </div>
+  </header>
+
+  <Content />
+
+  <Fragment slot="sidebar">
+    <RecentPosts />
+  </Fragment>
+</Base>

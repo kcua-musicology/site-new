@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import LabsNav from '../../components/LabsNav.astro';
+
+export async function getStaticPaths() {
+  const teachers = await getCollection('labs');
+  return teachers.map((teacher) => ({
+    params: { slug: teacher.id },
+    props: { teacher },
+  }));
+}
+
+const { teacher } = Astro.props;
+const { Content } = await render(teacher);
+const { name, field, photo, links } = teacher.data;
+---
+
+<Base
+  title={name}
+  heading={name}
+  breadcrumb={[{ label: '教員紹介', href: '/labs/' }, { label: name }]}
+>
+  <h2>{name}（{field}）</h2>
+
+  {photo && <p><img src={photo} alt={name} /></p>}
+
+  {links.length > 0 && (
+    <p>
+      {links.map((link, i) => (
+        <>
+          {i > 0 && ' / '}
+          <a href={link.url} rel="noopener" target="_blank">{link.label}</a>
+        </>
+      ))}
+    </p>
+  )}
+
+  <Content />
+
+  <Fragment slot="sidebar">
+    <LabsNav />
+  </Fragment>
+</Base>

@@ -1,0 +1,42 @@
+---
+import { formatDate, primaryCategory, excerpt, type Post } from '../lib/blog';
+
+interface Props {
+  post: Post;
+  /** 一覧では抜粋と「Read more」を出す。サイドバーでは出さない */
+  detailed?: boolean;
+}
+
+const { post, detailed = false } = Astro.props;
+const { title, date, thumbnail } = post.data;
+const category = primaryCategory(post);
+const href = `/${post.id}/`;
+---
+
+<div class={`vk_post vk_post-postType-post media vk_post-col-xs-12 vk_post-col-sm-12 vk_post-col-lg-12${detailed ? ' vk_post-btn-display' : ' vk_post-col-xl-12'} post type-post status-publish format-standard hentry`}>
+  {thumbnail && (
+    <div class="vk_post_imgOuter media-img" style={`background-image:url(${thumbnail})`}>
+      <a href={href}>
+        {category && (
+          <div class="card-img-overlay">
+            <span class="vk_post_imgOuter_singleTermLabel" style="color:#fff;background-color:#999999">{category}</span>
+          </div>
+        )}
+        <img src={thumbnail} class="vk_post_imgOuter_img wp-post-image" alt="" />
+      </a>
+    </div>
+  )}
+
+  <div class="vk_post_body media-body">
+    <h5 class="vk_post_title media-title"><a href={href}>{title}</a></h5>
+    <div class="vk_post_date media-date published">{formatDate(date)}</div>
+    {detailed && (
+      <>
+        <p class="vk_post_excerpt media-text">{excerpt(post.body ?? '')}</p>
+        <div class="vk_post_btnOuter text-right">
+          <a class="btn btn-sm btn-primary vk_post_btn" href={href}>Read more</a>
+        </div>
+      </>
+    )}
+  </div>
+</div>

@@ -1,0 +1,26 @@
+---
+import { CATEGORY_ORDER, categoryPath } from '../lib/blog';
+
+interface Props {
+  /** 現在表示しているカテゴリ名。未指定なら「音楽学専攻ブログ」全体 */
+  current?: string;
+}
+
+const { current } = Astro.props;
+---
+
+<aside class="widget widget_link_list">
+  <h4 class="sub-section-title">Category</h4>
+  <ul>
+    <li class={`cat-item${current ? '' : ' current-cat'}`}>
+      <a href="/category/blog/">音楽学専攻ブログ</a>
+      <ul class="children">
+        {CATEGORY_ORDER.map((name) => (
+          <li class={`cat-item${name === current ? ' current-cat' : ''}`}>
+            <a href={categoryPath(name)}>{name}</a>
+          </li>
+        ))}
+      </ul>
+    </li>
+  </ul>
+</aside>

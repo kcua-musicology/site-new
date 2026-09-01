@@ -1,0 +1,19 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import MusicologyNav from '../../components/MusicologyNav.astro';
+
+const page = await getEntry('pages', 'musicology-lecture');
+const { Content } = await render(page);
+---
+
+<Base
+  title={page.data.title}
+  heading={page.data.title}
+  breadcrumb={[{ label: '京芸の音楽学', href: '/musicology/' }, { label: page.data.title }]}
+>
+  <Content />
+  <Fragment slot="sidebar">
+    <MusicologyNav />
+  </Fragment>
+</Base>

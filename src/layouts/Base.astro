@@ -1,0 +1,208 @@
+---
+const { title, description, heading, breadcrumb = [] } = Astro.props;
+const siteName = '京都市立芸術大学音楽学専攻';
+const hasSidebar = Astro.slots.has('sidebar');
+const hasHero = Astro.slots.has('hero');
+const hasBottom = Astro.slots.has('bottom');
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title ? `${title} | ${siteName}` : siteName}</title>
+  {description && <meta name="description" content={description} />}
+
+  <!-- 現行サイト（Lightningテーマ）と同じCSS。ファイル一式を public/ にコピーして使う -->
+  <link rel="stylesheet" href="/wp-includes/css/dist/block-library/style.min.css" />
+  <link rel="stylesheet" href="/wp-content/themes/lightning/g3/assets/css/style.css" />
+  <link rel="stylesheet" href="/wp-content/themes/lightning/g3/design-skin/origin3/css/style.css" />
+  <link rel="stylesheet" href="/wp-content/themes/lightning/style.css" />
+  <link rel="stylesheet" href="/wp-content/themes/lightning/vendor/vektor-inc/vk-swiper/src/assets/css/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="/wp-content/themes/lightning/g3/inc/vk-wp-oembed-blog-card/package/css/blog-card.css" />
+  <link rel="stylesheet" href="/wp-content/themes/lightning/vendor/vektor-inc/font-awesome-versions/src/versions/6/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" />
+
+  <!-- 現行サイトが <style> に埋め込んでいたテーマ設定（配色 #1e73be など） -->
+  <link rel="stylesheet" href="/css/lightning-theme.css" />
+
+  <!-- このサイト独自の調整（Lightningの後に読む） -->
+  <link rel="stylesheet" href="/css/site.css" />
+</head>
+<body class="wp-embed-responsive device-pc fa_v6_css">
+
+<header id="site-header" class="site-header site-header--layout--nav-float">
+  <div id="site-header-container" class="site-header-container container">
+
+    <h1 class="site-header-logo">
+      <a href="/">
+        <span><img src="/wp-content/uploads/2024/09/logo.png" alt={siteName} /></span>
+      </a>
+    </h1>
+
+    <nav id="global-nav" class="global-nav global-nav--layout--float-right">
+      <ul class="menu vk-menu-acc global-nav-list nav">
+        <li class="menu-item"><a href="/"><strong class="global-nav-name">TOP</strong></a></li>
+        <li class="menu-item menu-item-has-children">
+          <a href="/musicology/"><strong class="global-nav-name">京芸の音楽学</strong></a>
+          <ul class="sub-menu">
+            <li class="menu-item"><a href="/musicology/lecture/">音楽学専攻の授業</a></li>
+            <li class="menu-item"><a href="/musicology/dissertation/">過去の学位論文</a></li>
+            <li class="menu-item"><a href="/musicology/facilities/">施設紹介</a></li>
+            <li class="menu-item"><a href="/labs/">教員紹介</a></li>
+          </ul>
+        </li>
+        <li class="menu-item menu-item-has-children">
+          <a href="/labs/"><strong class="global-nav-name">教員紹介</strong></a>
+          <ul class="sub-menu">
+            <li class="menu-item"><a href="/labs/ota/">太田 峰夫</a></li>
+            <li class="menu-item"><a href="/labs/ikegami/">池上 健一郎</a></li>
+            <li class="menu-item"><a href="/labs/kawabata/">川端 美都子</a></li>
+            <li class="menu-item"><a href="/labs/shoda/">正田 悠</a></li>
+          </ul>
+        </li>
+        <li class="menu-item"><a href="/campuslife/"><strong class="global-nav-name">キャンパスライフ</strong></a></li>
+        <li class="menu-item"><a href="/admission/"><strong class="global-nav-name">受験生の皆さんへ</strong></a></li>
+        <li class="menu-item menu-item-has-children">
+          <a href="/category/blog/"><strong class="global-nav-name">音楽学専攻ブログ</strong></a>
+          <ul class="sub-menu">
+            <li class="menu-item"><a href="/category/blog/info/">お知らせ</a></li>
+            <li class="menu-item"><a href="/category/blog/musicology/">音楽学専攻の活動</a></li>
+            <li class="menu-item"><a href="/category/blog/professors/">教員の活動</a></li>
+            <li class="menu-item"><a href="/category/blog/students/">学生の活躍</a></li>
+            <!-- 現行URLは日本語スラッグ（卒業生の活動-blog）。リンク切れを避けるためそのまま維持 -->
+            <li class="menu-item"><a href="/category/blog/%e5%8d%92%e6%a5%ad%e7%94%9f%e3%81%ae%e6%b4%bb%e5%8b%95-blog/">卒業生の活動</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+{hasHero && <slot name="hero" />}
+
+{heading && (
+  <div class="page-header">
+    <div class="page-header-inner container">
+      <h1 class="page-header-title">{heading}</h1>
+    </div>
+  </div>
+)}
+
+{breadcrumb.length > 0 && (
+  <div id="breadcrumb" class="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li class="breadcrumb-list__item breadcrumb-list__item--home" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a href="/" itemprop="item"><i class="fas fa-fw fa-home"></i><span itemprop="name">HOME</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        {breadcrumb.map((item, i) => (
+          <li class="breadcrumb-list__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            {item.href
+              ? <a href={item.href} itemprop="item"><span itemprop="name">{item.label}</span></a>
+              : <span itemprop="name">{item.label}</span>}
+            <meta itemprop="position" content={String(i + 2)} />
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+)}
+
+<div class="site-body">
+  <div class="site-body-container container">
+    <div class={hasSidebar ? 'main-section main-section--col--two' : 'main-section'} id="main" role="main">
+      <div class="entry entry-full">
+        <div class="entry-body">
+          <slot />
+        </div>
+      </div>
+    </div>
+    {hasSidebar && (
+      <div class="sub-section sub-section--col--two">
+        <slot name="sidebar" />
+      </div>
+    )}
+  </div>
+</div>
+
+{hasBottom && (
+  <div class="site-body-bottom">
+    <div class="container">
+      <slot name="bottom" />
+    </div>
+  </div>
+)}
+
+<footer class="site-footer">
+  <nav class="footer-nav">
+    <div class="container">
+      <ul class="menu footer-nav-list nav nav--line">
+        <li class="menu-item"><a href="/">TOP</a></li>
+        <li class="menu-item"><a href="/musicology/">京芸の音楽学</a></li>
+        <li class="menu-item"><a href="/labs/">教員紹介</a></li>
+        <li class="menu-item"><a href="/campuslife/">キャンパスライフ</a></li>
+        <li class="menu-item"><a href="/admission/">受験生の皆さんへ</a></li>
+        <li class="menu-item"><a href="/category/blog/">音楽学専攻ブログ</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container site-footer-content">
+    <div class="row">
+      <div class="col-lg-4 col-md-6">
+        <aside class="widget widget_block widget_media_image">
+          <figure class="wp-block-image size-large">
+            <img src="/wp-content/uploads/2024/09/kcua_logo.svg" alt="" style="object-fit:cover" />
+          </figure>
+        </aside>
+        <aside class="widget widget_block widget_text">
+          <p class="has-regular-font-size">
+            〒600-8601<br />京都府京都市下京区下之町57-1<br />京都市立芸術大学<br />音楽学部・大学院音楽研究科<br />音楽学専攻
+          </p>
+        </aside>
+        <aside class="widget widget_block widget_text">
+          <p class="has-regular-font-size">
+            大学へのアクセスの詳細は<a href="https://www.kcua.ac.jp/?page_id=175777">こちら</a>をご覧ください。
+          </p>
+        </aside>
+      </div>
+      <div class="col-lg-4 col-md-6"></div>
+      <div class="col-lg-4 col-md-6">
+        <aside class="widget widget_block">
+          <ul class="wp-block-page-list">
+            <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/">HOME</a></li>
+            <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/campuslife/">キャンパスライフ</a></li>
+            <li class="wp-block-pages-list__item has-child">
+              <a class="wp-block-pages-list__item__link" href="/musicology/">京芸の音楽学</a>
+              <ul class="wp-block-navigation__submenu-container">
+                <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/musicology/lecture/">音楽学専攻の授業</a></li>
+                <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/musicology/dissertation/">過去の学位論文</a></li>
+                <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/musicology/facilities/">施設紹介</a></li>
+              </ul>
+            </li>
+            <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/admission/">受験生の皆さんへ</a></li>
+            <li class="wp-block-pages-list__item has-child">
+              <a class="wp-block-pages-list__item__link" href="/labs/">教員紹介</a>
+              <ul class="wp-block-navigation__submenu-container">
+                <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/labs/ota/">太田 峰夫</a></li>
+                <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/labs/ikegami/">池上 健一郎</a></li>
+                <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/labs/kawabata/">川端 美都子</a></li>
+                <li class="wp-block-pages-list__item"><a class="wp-block-pages-list__item__link" href="/labs/shoda/">正田 悠</a></li>
+              </ul>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div class="container site-footer-copyright">
+    <p>Copyright &copy; {siteName} All Rights Reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

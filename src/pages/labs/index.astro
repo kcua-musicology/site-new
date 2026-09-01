@@ -1,0 +1,28 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import LabsNav from '../../components/LabsNav.astro';
+
+const page = await getEntry('pages', 'labs');
+const { Content } = await render(page);
+
+const teachers = (await getCollection('labs')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Base title={page.data.title} heading={page.data.title} breadcrumb={[{ label: page.data.title }]}>
+  <Content />
+
+  <ul>
+    {teachers.map((t) => (
+      <li>
+        <a href={`/labs/${t.id}/`}>{t.data.name.replace(/\s+/g, '')}（{t.data.field}）</a>
+      </li>
+    ))}
+  </ul>
+
+  <Fragment slot="sidebar">
+    <LabsNav />
+  </Fragment>
+</Base>

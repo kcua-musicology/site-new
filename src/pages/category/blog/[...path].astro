@@ -1,0 +1,85 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostCard from '../../../components/PostCard.astro';
+import RecentPosts from '../../../components/RecentPosts.astro';
+import CategoryNav from '../../../components/CategoryNav.astro';
+import {
+  getPosts,
+  CATEGORY_ORDER,
+  CATEGORY_SLUGS,
+  POSTS_PER_PAGE,
+  type Post,
+} from '../../../lib/blog';
+
+export async function getStaticPaths() {
+  const all = await getPosts();
+
+  // 現行サイトのURL体系:
+  //   /category/blog/            /category/blog/page/2/
+  //   /category/blog/students/   /category/blog/students/page/2/
+  const build = (posts: Post[], base: string | null, category?: string) => {
+    const total = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
+    return Array.from({ length: total }, (_, i) => {
+      const page = i + 1;
+      const segments = [base, page > 1 ? `page/${page}` : null].filter(Boolean);
+      return {
+        params: { path: segments.length ? segments.join('/') : undefined },
+        props: {
+          category,
+          page,
+          total,
+          posts: posts.slice(i * POSTS_PER_PAGE, page * POSTS_PER_PAGE),
+        },
+      };
+    });
+  };
+
+  return [
+    ...build(all, null),
+    ...CATEGORY_ORDER.flatMap((name) =>
+      build(
+        all.filter((p) => p.data.categories.includes(name)),
+        CATEGORY_SLUGS[name],
+        name,
+      ),
+    ),
+  ];
+}
+
+const { category, page, total, posts } = Astro.props;
+
+const heading = category ?? '音楽学専攻ブログ';
+const basePath = category
+  ? `/category/blog/${encodeURIComponent(CATEGORY_SLUGS[category])}/`
+  : '/category/blog/';
+const pageHref = (n: number) => (n === 1 ? basePath : `${basePath}page/${n}/`);
+
+const breadcrumb = category
+  ? [{ label: '音楽学専攻ブログ', href: '/category/blog/' }, { label: category }]
+  : [{ label: '音楽学専攻ブログ' }];
+---
+
+<Base title={heading} heading={heading} breadcrumb={breadcrumb}>
+  <div class="post-list vk_posts vk_posts-mainSection">
+    {posts.map((post) => <PostCard post={post} detailed />)}
+  </div>
+
+  {total > 1 && (
+    <nav class="navigation pagination" aria-label="投稿">
+      <ul class="page-numbers">
+        {Array.from({ length: total }, (_, i) => i + 1).map((n) => (
+          <li>
+            {n === page
+              ? <span aria-current="page" class="page-numbers current">{n}</span>
+              : <a class="page-numbers" href={pageHref(n)}>{n}</a>}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )}
+
+  <Fragment slot="sidebar">
+    <RecentPosts />
+    <CategoryNav current={category} />
+  </Fragment>
+</Base>

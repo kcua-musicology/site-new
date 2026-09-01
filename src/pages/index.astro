@@ -1,0 +1,63 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { getPosts, formatDate, excerpt } from '../lib/blog';
+
+const page = await getEntry('pages', 'home');
+const { Content } = await render(page);
+
+const posts = (await getPosts()).slice(0, 3);
+---
+
+<Base title="" description={page.data.description}>
+  <Fragment slot="hero">
+    <div class="ltg-slide">
+      <picture>
+        {page.data.hero_mobile && (
+          <source media="(max-width: 767px)" srcset={page.data.hero_mobile} />
+        )}
+        <img src={page.data.hero} alt="" class="ltg-slide-item-img" />
+      </picture>
+    </div>
+  </Fragment>
+
+  <Content />
+
+  <Fragment slot="bottom">
+    <aside class="widget widget_block">
+      <hr class="wp-block-separator has-alpha-channel-opacity" />
+    </aside>
+    <aside class="widget widget_block"><h4>音楽学専攻blog</h4></aside>
+    <aside class="widget widget_block widget_recent_entries">
+      <ul class="wp-block-latest-posts__list has-dates wp-block-latest-posts">
+        {posts.map((post) => (
+          <li>
+            {post.data.thumbnail && (
+              <div class="wp-block-latest-posts__featured-image">
+                <a href={`/${post.id}/`}>
+                  <img
+                    src={post.data.thumbnail}
+                    width="150"
+                    height="150"
+                    class="attachment-thumbnail size-thumbnail wp-post-image"
+                    alt=""
+                  />
+                </a>
+              </div>
+            )}
+            <a class="wp-block-latest-posts__post-title" href={`/${post.id}/`}>{post.data.title}</a>
+            <time datetime={post.data.date.toISOString()} class="wp-block-latest-posts__post-date">
+              {formatDate(post.data.date)}
+            </time>
+            <div class="wp-block-latest-posts__post-excerpt">
+              {excerpt(post.body ?? '', 55)}
+              <a class="wp-block-latest-posts__read-more" href={`/${post.id}/`} rel="noopener noreferrer">
+                続きを読む<span class="screen-reader-text">: {post.data.title}</span>
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </Fragment>
+</Base>

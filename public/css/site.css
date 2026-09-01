@@ -1,0 +1,36 @@
+/* Lightningテーマの後に読み込む、このサイト独自の調整 */
+
+/* トップのメイン画像。現行はスライダーだが画像が1枚なので静止画として出す */
+.ltg-slide {
+  line-height: 0;
+}
+
+.ltg-slide-item-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+/* トップ下部の最新記事リスト */
+.wp-block-latest-posts__featured-image img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* 時間割表。現行サイトの水色ヘッダーを再現する */
+.entry-body table th {
+  background-color: #add8e6;
+  text-align: center;
+  font-weight: normal;
+}
+
+.entry-body table td {
+  text-align: center;
+}
+
+/* 1列目（限）は見出し的に扱う */
+.entry-body table td:first-child {
+  white-space: nowrap;
+}
