@@ -7,11 +7,13 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/rewrite-base.mjs",
+    "build": "astro build && node scripts/sitemap-alias.mjs && node scripts/rewrite-base.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.2.10"
   },
   "allowScripts": {

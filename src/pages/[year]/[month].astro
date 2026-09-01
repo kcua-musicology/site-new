@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import RecentPosts from '../../components/RecentPosts.astro';
+import CategoryNav from '../../components/CategoryNav.astro';
+import { getPosts, type Post } from '../../lib/blog';
+
+// 現行サイトの月別アーカイブ（/2024/09/ など）。sitemap.xml に載っており
+// 検索結果からの流入があるため、移行後も同じURLで残す
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const byMonth = new Map<string, Post[]>();
+
+  for (const post of posts) {
+    const d = post.data.date;
+    const key = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+    byMonth.set(key, [...(byMonth.get(key) ?? []), post]);
+  }
+
+  return [...byMonth].map(([key, list]) => {
+    const [year, month] = key.split('/');
+    return { params: { year, month }, props: { year, month, posts: list } };
+  });
+}
+
+const { year, month, posts } = Astro.props;
+const heading = `${Number(month)}月 ${year}`;
+---
+
+<Base title={heading} heading={heading} breadcrumb={[{ label: heading }]}>
+  <div class="post-list vk_posts vk_posts-mainSection">
+    {posts.map((post) => <PostCard post={post} detailed />)}
+  </div>
+
+  <Fragment slot="sidebar">
+    <RecentPosts />
+    <CategoryNav />
+  </Fragment>
+</Base>
