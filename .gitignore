@@ -1,7 +1,9 @@
 # build output
-dist/
+# 先頭の / が無いと、public/wp-includes/css/dist/ のような
+# 深い階層の dist まで巻き添えで除外されるので必ず付ける
+/dist/
 # generated types
-.astro/
+/.astro/
 
 # dependencies
 node_modules/
